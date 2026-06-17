@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoQuest: Manual de Desenvolvimento Unity 3D</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --text-main: #334155;
+            --text-light: #64748b;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --code-bg: #1e293b;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        #sidebar {
+            width: 320px;
+            background-color: var(--primary);
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            background-color: #020617;
+            text-align: center;
+            border-bottom: 1px solid var(--secondary);
+        }
+
+        .sidebar-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            overflow-y: auto;
+            flex-grow: 1;
+            padding: 15px 0;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item a:hover, .nav-item.active a {
+            color: white;
+            background-color: var(--secondary);
+            border-left-color: var(--accent);
+        }
+
+        .nav-item i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        /* MAIN CONTENT */
+        #content-wrapper {
+            margin-left: 320px;
+            flex-grow: 1;
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        header.main-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header.main-header::after {
+            content: '\f1b3';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            right: -30px;
+            bottom: -30px;
+            font-size: 200px;
+            color: rgba(255,255,255,0.03);
+            pointer-events: none;
+        }
+
+        .badge {
+            background-color: var(--accent);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        header.main-header h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        header.main-header p {
+            color: #cbd5e1;
+            font-size: 16px;
+            max-width: 700px;
+        }
+
+        /* SECTIONS & CARDS */
+        .section-panel {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+
+        .section-title i {
+            margin-right: 15px;
+            color: var(--accent);
+        }
+
+        p.description {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
+
+        /* CALLOUT BOXES */
+        .callout {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .callout i {
+            font-size: 22px;
+            margin-right: 15px;
+            margin-top: 2px;
+        }
+
+        .callout-info { background-color: #eff6ff; border-left: 5px solid var(--info); color: #1e40af; }
+        .callout-warning { background-color: #fffbeb; border-left: 5px solid var(--warning); color: #854d0e; }
+        .callout-danger { background-color: #fef2f2; border-left: 5px solid var(--danger); color: #991b1b; }
+        .callout-success { background-color: #f0fdf4; border-left: 5px solid var(--accent); color: #166534; }
+
+        .callout h4 { font-weight: 700; margin-bottom: 5px; }
+
+        /* STEP BY STEP INSTRUCTIONS */
+        .steps-list {
+            list-style: none;
+            margin: 25px 0;
+        }
+
+        .step-item {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 30px;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 36px;
+            height: 36px;
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .step-item:hover .step-number {
+            background-color: var(--accent);
+        }
+
+        .step-content h4 {
+            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .ui-path {
+            background-color: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--primary);
+        }
+
+        /* CODE BLOCKS */
+        .code-container {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+        }
+
+        .code-header {
+            background-color: #0f172a;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        .code-filename {
+            color: #94a3b8;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .code-lang {
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            color: #e2e8f0;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .kw { color: #f472b6; font-weight: bold; } /* keyword */
+        .cls { color: #38bdf8; } /* class */
+        .fn { color: #fbbf24; } /* function */
+        .str { color: #34d399; } /* string */
+        .cm { color: #64748b; font-style: italic; } /* comment */
+        .num { color: #fb923c; } /* number */
+
+        /* INTERACTIVE CHECKLIST */
+        .checklist-container {
+            margin-top: 30px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checklist-item:hover {
+            border-color: var(--accent);
+            background-color: #f0fdf4;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .checklist-item.done {
+            text-decoration: line-through;
+            color: var(--text-light);
+            background-color: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        /* TABLES */
+        table.matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        table.matrix-table th {
+            background-color: var(--secondary);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table.matrix-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        table.matrix-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        /* PROGRESS BAR FOR FOOTER */
+        #progress-sticky {
+            position: fixed;
+            bottom: 0;
+            left: 320px;
+            right: 0;
+            background-color: white;
+            padding: 15px 40px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 99;
+        }
+
+        .progress-bar-container {
+            flex-grow: 1;
+            background-color: #e2e8f0;
+            height: 8px;
+            border-radius: 10px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+
+        #progress-fill {
+            background-color: var(--accent);
+            width: 0%;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 992px) {
+            #sidebar { width: 80px; }
+            #sidebar .sidebar-header h1, #sidebar .sidebar-header p, #sidebar .nav-item span { display: none; }
+            #content-wrapper { margin-left: 80px; }
+            #progress-sticky { left: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h1>ECOQUEST</h1>
+            <p>Manual do Desenvolvedor v1.0</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active"><a href="#contexto"><i class="fas fa-project-diagram"></i> <span>1. Visão Geral & Contexto</span></a></li>
+            <li class="nav-item"><a href="#setup"><i class="fas fa-cog"></i> <span>2. Setup da Engine</span></a></li>
+            <li class="nav-item"><a href="#tags"><i class="fas fa-tags"></i> <span>3. Arquitetura de Tags</span></a></li>
+            <li class="nav-item"><a href="#player"><i class="fas fa-robot"></i> <span>4. M1: Controle do Robô</span></a></li>
+            <li class="nav-item"><a href="#camera"><i class="fas fa-video"></i> <span>5. M2: Câmera Suave</span></a></li>
+            <li class="nav-item"><a href="#coleta"><i class="fas fa-recycle"></i> <span>6. M3: Moedas & Coleta</span></a></li>
+            <li class="nav-item"><a href="#spawner"><i class="fas fa-cloud-showers-heavy"></i> <span>7. M4: Chuva de Poluição</span></a></li>
+            <li class="nav-item"><a href="#combate"><i class="fas fa-seedling"></i> <span>8. M5: Projéteis & Destruição</span></a></li>
+            <li class="nav-item"><a href="#vitoria"><i class="fas fa-trophy"></i> <span>9. M6: Santuário Final</span></a></li>
+            <li class="nav-item"><a href="#checklist"><i class="fas fa-check-square"></i> <span>10. Checklist de Validação</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- CONTENT WRAPPER -->
+    <div id="content-wrapper">
+        
+        <!-- HERO HEADER -->
+        <header class="main-header">
+            <div class="badge">Unity 3D + C# Core</div>
+            <h2>EcoQuest: A Trilha Sustentável</h2>
+            <p>Um guia laboratorial passo a passo completo, hiper detalhado, focado nos fundamentos de GameObjects, Components, Física Rígida (Rigidbody), Triggers estruturais, padrões estruturais Singleton e ciclos de execução C#.</p>
+        </header>
+
+        <!-- SECTION 1 -->
+        <section id="contexto" class="section-panel">
+            <h3 class="section-title"><i class="fas fa-project-diagram"></i> 1. Visão Geral & Objetivos de Aprendizagem</h3>
+            <p class="description">
+                A proposta do <strong>EcoQuest</strong> é converter conceitos de física mecânica abstrata e lógica sequencial estruturada em mecânicas interativas de jogo. Este projeto adapta a arquitetura do clássico "Cubo Explorador" em uma dinâmica de jogo "Endless Runner/Trilha Ativa".
+            </p>
+            <p class="description">
+                O jogador controla o <strong>Eco-Robô</strong>, que avança de maneira retilínea uniforme por uma trilha flutuante. O desafio consiste em executar desvios laterais mecânicos, coletar detritos recicláveis para pontuar, disparar sementes purificadoras contra barreiras industriais tóxicas e alcançar o Santuário Verde intacto.
+            </p>
+
+            <div class="callout callout-info">
+                <i class="fas fa-lightbulb"></i>
+                <div>
+                    <h4>O que você aprenderá neste módulo avançado:</h4>
+                    <p>Manipulação de forças físicas no <code>FixedUpdate</code>, controle estrutural de ciclo de vida de instâncias dinâmicas via <code>Instantiate</code> e <code>Destroy</code>, tratamento seguro de colisões não-físicas por zonas de gatilho (<code>Triggers</code>) e centralização de estados voláteis de dados com o padrão <strong>Singleton</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2 -->
+        <section id="setup" class="section-panel">
+            <h3 class="section-title"><i class="fas fa-cog"></i> 2. Configuração Inicial e Hierarquia de Pastas</h3>
+            <p class="description">A integridade do ciclo de compilação da Unity depende diretamente de convenções estritas de nomenclatura e endereçamento físico de arquivos na partição de armazenamento.</p>
+            
+            <ul class="steps-list">
+                <li class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Inicialização do Hub</h4>
+                        <p>Abra o Unity Hub, clique em <span class="ui-path">New Project</span>, selecione explicitamente o template <span class="ui-path">3D Core</span>. Nomeie o projeto como <code>EcoQuest_Alpha</code> e defina o diretório local de salvamento local estável.</p>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Arquitetura de Diretórios</h4>
+                        <p>Dentro da janela de contexto <span class="ui-path">Project</span>, clique com o botão direito em <code>Assets</code>, acesse <span class="ui-path">Create > Folder</span>. Monte rigorosamente a seguinte árvore estrutural:</p>
+                        <pre>📁 Assets
+  ├── 📁 _Project
+  │     ├── 📁 Scenes
+  │     ├── 📁 Scripts
+  │     ├── 📁 Prefabs
+  │     ├── 📁 Materials
+  │     └── 📁 Audio</pre>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Salvamento de Escopo</h4>
+                        <p>Acesse <span class="ui-path">File > Save Scene As...</span>, navegue até <code>Assets/_Project/Scenes/</code> e salve o estado atual da cena de desenvolvimento sob o nome de <code>Fase01_NivelFlorestal</code>.</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- SECTION 3 -->
+        <section id="tags" class="section-panel">
+            <h3 class="section-title"><i class="fas fa-tags"></i> 3. Matriz Arquitetural de Tags</h3>
+            <p class="description">Tags funcionam como assinaturas de strings estáticas otimizadas em nível de engine para triagem de metadados durante eventos de contato de colisores. A omissão ou digitação incorreta destas chaves anulará as validações condicionais do código C#.</p>
+            
+            <div class="callout callout-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <h4>Atenção Crucial ao "Case Sensitivity"</h4>
+                    <p>A engine trata <code>Reciclavio</code> e <code>reciclavio</code> como sequências distintas em memória. Siga a tabela abaixo estritamente sem o uso de caracteres especiais ou acentuações idiomáticas.</p>
+                </div>
+            </div>
+
+            <table class="matrix-table">
+                <thead>
+                    <tr>
+                        <th>Identificador Exato (Tag)</th>
+                        <th>Alvo de Atribuição na Hierarquia</th>
+                        <th>Finalidade Operacional no Código</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="ui-path">Player</span></td>
+                        <td>GameObject do Eco-Robô</td>
+                        <td>Garante que colisores externos identifiquem a entidade do usuário.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ui-path">Reciclavio</span></td>
+                        <td>Prefabs de detritos espalhados (Cilindros)</td>
+                        <td>Informa ao gatilho que a pontuação global deve ser incrementada.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ui-path">Poluicao</span></td>
+                        <td>Obstáculos dinâmicos de fumaça (Cubos)</td>
+                        <td>Desencadeia a rotina de subtração de vidas do jogador.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ui-path">Semente</span></td>
+                        <td>Instâncias de projéteis ativos (Esferas)</td>
+                        <td>Valida o vetor de ataque contra os bloqueios tóxicos da pista.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ui-path">BarreiraToxica</span></td>
+                        <td>Estruturas estáticas de contenção (Barris)</td>
+                        <td>Alvo exclusivo destrutível pelo impacto direto do projétil Semente.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ui-path">Santuario</span></td>
+                        <td>Portal místico final de fase</td>
+                        <td>Sinaliza ao GameManager a interrupção do loop de gameplay e tela de vitória.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="description"><strong>Como Configurar:</strong> Acesse <span class="ui-path">Edit > Project Settings > Tags and Layers</span>. Clique no símbolo de soma <code>+</code> sob a aba Tags e insira individualmente os registros acima.</p>
+        </section>
+
+        <!-- SECTION 4 -->
+        <section id="player" class="section-panel">
+            <h3 class="section-title"><i class="fas fa-robot"></i> 4. Missão 1: O Eco-Robô (Física Dinâmica e Movimentação)</h3>
+            <p class="description">Nesta etapa, criaremos o corpo físico do nosso herói tecnológico e daremos a ele a capacidade de locomoção contínua e desvio paramétrico responsivo.</p>
+            
+            <ul class="steps-list">
+                <li class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Construção Estrutural da Pista</h4>
+                        <p>No painel <span class="ui-path">Hierarchy</span>, execute <span class="ui-path">Create > 3D Object > Cube</span>. Renomeie o elemento para <code>Trilha_Principal</code>. No Inspector, altere o componente Transform para os seguintes valores absolutos: <strong>Position (0, 0, 0)</strong> e <strong>Scale (12, 1, 100)</strong>.</p>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Instanciação do Jogador</h4>
+                        <p>Crie um novo objeto <span class="ui-path">Cube</span> na raiz da cena, batize-o de <code>EcoRobo</code> e mude sua coordenada de inicialização para <strong>Position (0, 1, -45)</strong>. Defina a Tag do objeto como <span class="ui-path">Player</span>.</p>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Atribuição Física (Rigidbody)</h4>
+                        <p>Com o <code>EcoRobo</code> selecionado, clique em <span class="ui-path">Add Component</span> e busque por <code>Rigidbody</code>. Expanda o menu de propriedades <span class="ui-path">Constraints</span> e marque obrigatoriamente as flags <span class="ui-path">Freeze Rotation X</span> e <span class="ui-path">Freeze Rotation Z</span>. Isso impede que forças de fricção façam o robô capotar lateralmente.</p>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">PlayerController.cs</span>
+                    <span class="code-lang">C# / Unity Standard</span>
+                </div>
+<pre><span class="kw">using</span> UnityEngine;
+
+<span class="kw">public class</span> <span class="cls">PlayerController</span> : <span class="cls">MonoBehaviour</span>
+{
+    [Header(<span class="str">"Configurações de Vetor"</span>)]
+    <span class="kw">public float</span> forwardSpeed = <span class="num">8f</span>;
+    <span class="kw">public float</span> lateralSpeed = <span class="num">12f</span>;
+    <span class="kw">public float</span> trackLimit = <span class="num">5.5f</span>;
+
+    <span class="kw">private</span> <span class="cls">Rigidbody</span> rb;
+    <span class="kw">private float</span> sideInput;
+
+    <span class="kw">void</span> <span class="fn">Start</span>()
+    {
+        rb = GetComponent&lt;<span class="cls">Rigidbody</span>&gt;();
+        <span class="kw">if</span> (rb == <span class="kw">null</span>) 
+            <span class="cls">Debug</span>.<span class="fn">LogError</span>(<span class="str">"ERRO FATAL: Rigidbody ausente em EcoRobo!"</span>);
+    }
+
+    <span class="kw">void</span> <span class="fn">Update</span>()
+    {
+        <span class="cm">// Captura de input discreto e sem suavização para respostas instantâneas de arcade</span>
+        sideInput = <span class="cls">Input</span>.<span class="fn">GetAxisRaw</span>(<span class="str">"Horizontal"</span>);
+    }
+
+    <span class="kw">void</span> <span class="fn">FixedUpdate</span>()
+    {
+        <span class="cm">// Cálculo vetorial linear para avanço cinemático contínuo</span>
+        Vector3 forwardMove = transform.forward * forwardSpeed * <span class="cls">Time</span>.fixedDeltaTime;
+        Vector3 lateralMove = transform.right * sideInput * lateralSpeed * <span class="cls">Time</span>.fixedDeltaTime;
+        
+        Vector3 finalTargetPosition = rb.position + forwardMove + lateralMove;
+
+        <span class="cm">// Aplicação de restrição matemática limitadora de borda (Clamp)</span>
+        finalTargetPosition.x = <span class="cls">Mathf</span>.<span class="fn">Clamp</span>(finalTargetPosition.x, -trackLimit, trackLimit);
+
+        <span class="cm">// Movimentação física segura por interpolação de matriz de colisão</span>
+        rb.<span class="fn">MovePosition</span>(finalTargetPosition);
+    }
+}</pre>
+            </div>
+        </section>
+
+        <!-- SECTION 5 -->
+        <section id="camera" class="section-panel">
+            <h3 class="section-title"><i class="fas fa-video"></i> 5. Missão 2: Câmera Cinematográfica Suave (Lerp)</h3>
+            <p class="description">Câmeras fixas geram desconforto visual em jogos rápidos. Usaremos Interpolação Linear de Vetores (Lerp) acoplada ao ciclo tardio de atualização (LateUpdate) para alcançar estabilidade visual de nível profissional.</p>
+            
+            <div class="callout callout-info">
+                <i class="fas fa-clock"></i>
+                <div>
+                    <h4>Por que LateUpdate?</h4>
+                    <p>Se atualizarmos a posição da câmera no método <code>Update</code> ou <code>FixedUpdate</code>, ocorrerá um fenômeno de oscilação e trepidação ("jittering"), pois a câmera tentará se mover antes ou concorrentemente à física do Robô. O <code>LateUpdate</code> garante execução sequencial controlada posterior.</p>
+                </div>
+            </div>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">CameraFollow.cs</span>
+                    <span class="code-lang">C# / Unity Standard</span>
+                </div>
+<pre><span class="kw">using</span> UnityEngine;
+
+<span class="kw">public class</span> <span class="cls">CameraFollow</span> : <span class="cls">MonoBehaviour</span>
+{
+    <span class="kw">public</span> <span class="cls">Transform</span> targetPlayer;
+    <span class="kw">public</span> <span class="cls">Vector3</span> offsetDistance = <span class="kw">new</span> <span class="cls">Vector3</span>(<span class="num">0f</span>, <span class="num">4.5f</span>, <span class="num">-8f</span>);
+    <span class="kw">public float</span> smoothFactor = <span class="num">5f</span>;
+
+    <span class="kw">void</span> <span class="fn">LateUpdate</span>()
+    {
+        <span class="kw">if</span> (targetPlayer == <span class="kw">null</span>) <span class="kw">return</span>;
+
+        <span class="cm">// Projeta o ponto de destino ideal no espaço euclidiano 3D</span>
+        Vector3 targetDestination = targetPlayer.position + offsetDistance;
+        
+        <span class="cm">// Interpola suavemente a posição atual e o destino em função do delta de tempo</span>
+        Vector3 smoothPosition = <span class="cls">Vector3</span>.<span class="fn">Lerp</span>(transform.position, targetDestination, smoothFactor * <span class="cls">Time</span>.deltaTime);
+        
+        transform.position = smoothPosition;
+
+        <span class="cm">// Força o enquadramento angular da câmera para olhar fixamente para as coordenadas do Robô</span>
+        transform.<span class="fn">LookAt</span>(targetPlayer.position + <span class="cls">Vector3</span>.up * <span class="num">0.5f</span>);
+    }
+}</pre>
+            </div>
+            <p class="description"><strong>Passo operacional:</strong> Anexe o script à <code>Main Camera</code> da cena. No Inspector, arraste o objeto <code>EcoRobo</code> da hierarquia para o campo de referência vazio chamado <code>Target Player</code>.</p>
+        </section>
+
+        <!-- SECTION 6 -->
+        <section id="coleta" class="section-panel">
+            <h3 class="section-title"><i class="fas fa-recycle"></i> 6. Missão 3: Coletáveis Sustentáveis e o Padrão Singleton</h3>
+            <p class="description">Para contabilizar os pontos do jogador de forma centralizada e acessível por qualquer script da cena, criaremos um GameManager estruturado sob o padrão de projeto Singleton.</p>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">GameManager.cs</span>
+                    <span class="code-lang">C# / Core Singleton</span>
+                </div>
+<pre><span class="kw">using</span> UnityEngine;
+
+<span class="kw">public class</span> <span class="cls">GameManager</span> : <span class="cls">MonoBehaviour</span>
+{
+    <span class="cm">// Instância global de acesso público estático</span>
+    <span class="kw">public static</span> <span class="cls">GameManager</span> Instance { <span class="kw">get</span>; <span class="kw">private set;</span> }
+
+    [Header(<span class="str">"Indicadores de Estado"</span>)]
+    <span class="kw">public int</span> totalScore = <span class="num">0</span>;
+    <span class="kw">public int</span> activeVidas = <span class="num">3</span>;
+    <span class="kw">public bool</span> isLevelComplete = <span class="kw">false</span>;
+
+    <span class="kw">void</span> <span class="fn">Awake</span>()
+    {
+        <span class="cm">// Garantia irrestrita do ciclo de instância única na memória da aplicação</span>
+        <span class="kw">if</span> (Instance == <span class="kw">null</span>)
+        {
+            Instance = <span class="kw">this</span>;
+        }
+        <span class="kw">else</span>
+        {
+            <span class="cls">Destroy</span>(gameObject);
+        }
+    }
+
+    <span class="kw">public void</span> <span class="fn">AddPoints</span>(<span class="kw">int</span> pointsValue)
+    {
+        totalScore += pointsValue;
+        <span class="cls">Debug</span>.<span class="fn">Log</span>(<span class="str">"Pontuação Atualizada: "</span> + totalScore + <span class="str">" Pontos."</span>);
+    }
+
+    <span class="kw">public void</span> <span class="fn">ApplyDamage</span>()
+    {
+        activeVidas--;
+        <span class="cls">Debug</span>.<span class="fn">LogWarning</span>(<span class="str">"Dano Registrado! Restam: "</span> + activeVidas + <span class="str">" vidas."</span>);
+        <span class="kw">if</span> (activeVidas &lt;= <span class="num">0</span>)
+        {
+            <span class="cls">Debug</span>.<span class="fn">LogError</span>(<span class="str">"FIM DE JOGO - O robô colapsou energeticamente."</span>);
+            <span class="cm">// Lógica de reinicialização futura</span>
+        }
+    }
+}</pre>
+            </div>
+
+            <p class="description">Agora, implementaremos a lógica individual de colisão não-física dos resíduos recicláveis usando a sub-rotina nativa <code>OnTriggerEnter</code>.</p>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">ColetavelItem.cs</span>
+                    <span class="code-lang">C# / Trigger Matrix</span>
+                </div>
+<pre><span class="kw">using</span> UnityEngine;
+
+<span class="kw">public class</span> <span class="cls">ColetavelItem</span> : <span class="cls">MonoBehaviour</span>
+{
+    <span class="kw">public int</span> scoreReward = <span class="num">15</span>;
+    <span class="kw">public float</span> rotateSpeed = <span class="num">120f</span>;
+
+    <span class="kw">void</span> <span class="fn">Update</span>()
+    {
+        <span class="cm">// Criação do feedback visual rotatório e constante de atração técnica</span>
+        transform.<span class="fn">Rotate</span>(Vector3.up * rotateSpeed * <span class="cls">Time</span>.deltaTime, <span class="cls">Space</span>.World);
+    }
+
+    <span class="kw">void</span> <span class="fn">OnTriggerEnter</span>(<span class="cls">Collider</span> other)
+    {
+        <span class="cm">// Filtra e valida se o elemento intruso possui o rótulo Player atribuído</span>
+        <span class="kw">if</span> (other.<span class="fn">CompareTag</span>(<span class="str">"Player"</span>))
+        {
+            <span class="cm">// Executa a comunicação segura via canal Singleton do GameManager</span>
+            <span class="cls">GameManager</span>.Instance.<span class="fn">AddPoints</span>(scoreReward);
+            
+            <span class="cm">// Libera o endereço de memória destruindo a instância local do item</span>
+            <span class="cls">Destroy</span>(gameObject);
+        }
+    }
+}</pre>
+            </div>
+            
+            <div class="callout callout-success">
+                <i class="fas fa-box-open"></i>
+                <div>
+                    <h4>Workflow de Geração do Prefab Coletável</h4>
+                    <p>1. Crie um <code>Cylinder</code> na cena, mude o nome para <code>Item_Plastico</code> e mude a Tag para <strong>Reciclavio</strong>.<br>
+                    2. No componente <code>Capsule Collider</code> do inspetor, <strong>marque obrigatoriamente a opção Is Trigger</strong>.<br>
+                    3. Anexe o script <code>ColetavelItem.cs</code> a ele.<br>
+                    4. Arraste este cilindro da hierarquia diretamente para sua pasta <code>Assets/_Project/Prefabs/</code>. Delete o objeto original da cena. Agora ele é um modelo de clonagem global reutilizável (Prefab)!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7 -->
+        <section id="spawner" class="section-panel">
+            <h3 class="section-title"><i class="fas fa-cloud-showers-heavy"></i> 7. Missão 4: Chuva de Poluição (Spawn Dinâmico Aleatório)</h3>
+            <p class="description">Para criar um desafio dinâmico, criaremos um algoritmo responsável por monitorar o tempo de jogo e instanciar obstáculos (nuvens de poluição) em localizações horizontais calculadas de forma randômica à frente do avanço do jogador.</p>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">ObstaculoFumaca.cs</span>
+                    <span class="code-lang">C# / Obstacle Movement</span>
+                </div>
+<pre><span class="kw">using</span> UnityEngine;
+
+<span class="kw">public class</span> <span class="cls">ObstaculoFumaca</span> : <span class="cls">MonoBehaviour</span>
+{
+    <span class="kw">public float</span> expansionSpeed = <span class="num">2f</span>;
+    
+    <span class="kw">void</span> <span class="fn">OnTriggerEnter</span>(<span class="cls">Collider</span> other)
+    {
+        <span class="kw">if</span> (other.<span class="fn">CompareTag</span>(<span class="str">"Player"</span>))
+        {
+            <span class="cls">GameManager</span>.Instance.<span class="fn">ApplyDamage</span>();
+            <span class="cls">Destroy</span>(gameObject);
+        }
+    }
+}</pre>
+            </div>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">GeradorObstaculos.cs</span>
+                    <span class="code-lang">C# / Dynamic Factory</span>
+                </div>
+<pre><span class="kw">using</span> UnityEngine;
+
+<span class="kw">public class</span> <span class="cls">GeradorObstaculos</span> : <span class="cls">MonoBehaviour</span>
+{
+    <span class="kw">public</span> <span class="cls">GameObject</span> prefabPoluicao;
+    <span class="kw">public</span> <span class="cls">Transform</span> playerTransform;
+    
+    <span class="kw">public float</span> spawnInterval = <span class="num">1.8f</span>;
+    <span class="kw">public float</span> spawnDistanceAhead = <span class="num">40f</span>;
+    <span class="kw">public float</span> xSpawnRange = <span class="num">5f</span>;
+
+    <span class="kw">private float</span> timerAccumulator = <span class="num">0f</span>;
+
+    <span class="kw">void</span> <span class="fn">Update</span>()
+    {
+        <span class="kw">if</span> (playerTransform == <span class="kw">null</span>) <span class="kw">return</span>;
+
+        timerAccumulator += <span class="cls">Time</span>.deltaTime;
+
+        <span class="kw">if</span> (timerAccumulator &gt;= spawnInterval)
+        {
+            <span class="fn">SpawnObstaculoAleatorio</span>();
+            timerAccumulator = <span class="num">0f</span>;
+        }
+    }
+
+    <span class="kw">void</span> <span class="fn">SpawnObstaculoAleatorio</span>()
+    {
+        <span class="cm">// Computa uma coordenada X pseudo-aleatória dentro dos limites de largura da pista</span>
+        <span class="kw">float</span> randomX = <span class="cls">Random</span>.<span class="fn">Range</span>(-xSpawnRange, xSpawnRange);
+        
+        <span class="cm">// Centraliza o vetor de spawn fixando uma distância segura à frente do robô</span>
+        Vector3 spawnPosition = <span class="kw">new</span> <span class="cls">Vector3</span>(randomX, <span class="num">1f</span>, playerTransform.position.z + spawnDistanceAhead);
+
+        <span class="cm">// Instanciação em tempo de execução nativa</span>
+        <span class="cls">Instantiate</span>(prefabPoluicao, spawnPosition, <span class="cls">Quaternion</span>.identity);
+    }
+}</pre>
+            </div>
+            <p class="description"><strong>Passo Operacional:</strong> Salve o objeto de fumaça cinza como Prefab (com colisor configurado em Is Trigger e a tag <strong>Poluicao</strong>). Crie um objeto vazio chamado <code>Mecanismo_Spawner</code> na cena e configure as referências correspondentes no script.</p>
+        </section>
+
+        <!-- SECTION 8 -->
+        <section id="combate" class="section-panel">
+            <h3 class="section-title"><i class="fas fa-seedling"></i> 8. Missão 5: Disparo de Sementes Purificadoras e Destruição</h3>
+            <p class="description">Para contornar o problema dos barris industriais intransponíveis na pista, o jogador ganhará o poder de lançar projéteis cinemáticos capazes de limpar e fragmentar objetos destrutíveis.</p>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">ProjetilSemente.cs</span>
+                    <span class="code-lang">C# / Physics Matrix</span>
+                </div>
+<pre><span class="kw">using</span> UnityEngine;
+
+<span class="kw">public class</span> <span class="cls">ProjetilSemente</span> : <span class="cls">MonoBehaviour</span>
+{
+    <span class="kw">public float</span> projectileSpeed = <span class="num">25f</span>;
+    <span class="kw">public float</span> lifeTime = <span class="num">3f</span>;
+
+    <span class="kw">void</span> <span class="fn">Start</span>()
+    {
+        <span class="cm">// Evita o vazamento crônico de memória na pilha destruindo o projétil por timeout</span>
+        <span class="cls">Destroy</span>(gameObject, lifeTime);
+    }
+
+    <span class="kw">void</span> <span class="fn">Update</span>()
+    {
+        <span class="cm">// Deslocamento cinemático espacial retilíneo acelerado</span>
+        transform.<span class="fn">Translate</span>(Vector3.forward * projectileSpeed * <span class="cls">Time</span>.deltaTime);
+    }
+
+    <span class="kw">void</span> <span class="fn">OnTriggerEnter</span>(<span class="cls">Collider</span> other)
+    {
+        <span class="cm">// Se colidir contra um elemento rotulado como barreira impenetrável</span>
+        <span class="kw">if</span> (other.<span class="fn">CompareTag</span>(<span class="str">"BarreiraToxica"</span>))
+        {
+            <span class="cls">Destroy</span>(other.gameObject); <span class="cm">// Elimina o obstáculo da cena</span>
+            <span class="cls">Destroy</span>(gameObject);       <span class="cm">// Elimina a si mesmo</span>
+        }
+    }
+}</pre>
+            </div>
+
+            <div class="callout callout-info">
+                <i class="fas fa-puzzle-piece"></i>
+                <div>
+                    <h4>Acoplamento no PlayerController</h4>
+                    <p>Abra seu arquivo <code>PlayerController.cs</code> criado na Missão 1 e adicione duas variáveis globais públicas: <code>public GameObject sementePrefab;</code> e <code>public Transform spawnPoint;</code>. Dentro do escopo da função <code>Update()</code>, insira a seguinte condicional estrita:</p>
+                    <pre>if (Input.GetKeyDown(KeyCode.Space)) 
+{
+    Instantiate(sementePrefab, spawnPoint.position, Quaternion.identity);
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 9 -->
+        <section id="vitoria" class="section-panel">
+            <h3 class="section-title"><i class="fas fa-trophy"></i> 9. Missão 6: O Portal do Santuário e Fim de Jogo</h3>
+            <p class="description">Toda experiência necessita de uma condição de término bem estabelecida. O Santuário Verde atuará como o ponto geográfico final da trilha.</p>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">SantuarioPortal.cs</span>
+                    <span class="code-lang">C# / Win Condition</span>
+                </div>
+<pre><span class="kw">using</span> UnityEngine;
+
+<span class="kw">public class</span> <span class="cls">SantuarioPortal</span> : <span class="cls">MonoBehaviour</span>
+{
+    <span class="kw">void</span> <span class="fn">OnTriggerEnter</span>(<span class="cls">Collider</span> other)
+    {
+        <span class="kw">if</span> (other.<span class="fn">CompareTag</span>(<span class="str">"Player"</span>))
+        {
+            <span class="cls">GameManager</span>.Instance.isLevelComplete = <span class="kw">true</span>;
+            <span class="cls">Debug</span>.<span class="fn">Log</span>(<span class="str">"VITÓRIA SUPREMA: A floresta foi restaurada pelo EcoQuest!"</span>);
+            
+            <span class="cm">// Congela o fluxo temporal do motor físico da Unity</span>
+            <span class="cls">Time</span>.timeScale = <span class="num">0f</span>;
+        }
+    }
+}</pre>
+            </div>
+            <p class="description"><strong>Montagem do Cenário Final:</strong> Na extremidade oposta da pista (ex: posição Z = 45), instancie um cilindro ou portal decorativo translúcido de grande escala. Configure a Tag para <strong>Santuario</strong>, ative o parâmetro <strong>Is Trigger</strong> em seu colisor e monte o script associado.</p>
+        </section>
+
+        <!-- SECTION 10 -->
+        <section id="checklist" class="section-panel">
+            <h3 class="section-title"><i class="fas fa-check-square"></i> 10. Checklist de Validação Interativa</h3>
+            <p class="description">Utilize o painel dinâmico abaixo para auditar os testes operacionais do protótipo diretamente durante a depuração no Editor da Unity. Clique nos itens para marcar o progresso.</p>
+            
+            <div class="checklist-container">
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox">
+                    <span>O Eco-Robô mantém aceleração constante para frente de forma automática?</span>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox">
+                    <span>O comando de direção lateral responde com precisão e bloqueia saídas para fora da pista?</span>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox">
+                    <span>A câmera acompanha o jogador com efeito elástico sem trepidações horizontais?</span>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox">
+                    <span>Os cilindros de lixo plástico rotacionam e desaparecem acrescendo 15 pontos no log ao contato?</span>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox">
+                    <span>Nuvens de fumaça geradas de forma dinâmica no horizonte disparam avisos de perda de vida no Console?</span>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox">
+                    <span>O botão de espaço faz o projétil verde avançar velozmente e desintegrar as barreiras rígidas de barris tóxicos?</span>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox">
+                    <span>O contato do cubo com o Portal místico final paralisa o relógio do jogo com sucesso?</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- STICKY PROGRESS BAR FOOTER -->
+    <footer id="progress-sticky">
+        <span style="font-size: 14px; font-weight: 600; color: var(--primary);">Progresso do Protótipo EcoQuest:</span>
+        <div class="progress-bar-container">
+            <div id="progress-fill"></div>
+        </div>
+        <span id="progress-percentage" style="font-size: 14px; font-weight: 700; color: var(--accent);">0% Concluído</span>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT -->
+    <script>
+        // Smooth scroll implementation for navigation items
+        document.querySelectorAll('.nav-menu a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Toggle Active state menu
+                    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                    this.parentElement.classList.add('active');
+                }
+            });
+        });
+
+        // Interactive Checklist mechanics with real-time calculations
+        function toggleChecklist(element) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            element.classList.toggle('done');
+            
+            if (element.classList.contains('done')) {
+                checkbox.checked = true;
+            } else {
+                checkbox.checked = false;
+            }
+            
+            calculateProgress();
+        }
+
+        function calculateProgress() {
+            const totalItems = document.querySelectorAll('.checklist-item').length;
+            const checkedItems = document.querySelectorAll('.checklist-item.done').length;
+            const percentage = Math.round((checkedItems / totalItems) * 100);
+            
+            document.getElementById('progress-fill').style.width = percentage + '%';
+            document.getElementById('progress-percentage').innerText = percentage + '% Concluído';
+        }
+
+        // Setup dynamic highlighting for active sections on window scroll
+        window.addEventListener('scroll', () => {
+            let currentSectionId = '';
+            const sections = document.querySelectorAll('section');
+            const scrollPosition = window.scrollY + 150;
+
+            sections.forEach(section => {
+                if (scrollPosition >= section.offsetTop && scrollPosition < (section.offsetTop + section.offsetHeight)) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+
+            if (currentSectionId) {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.querySelector('a').getAttribute('href') === '#' + currentSectionId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
