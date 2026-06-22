@@ -504,7 +504,7 @@
                         <td>Informa ao spawner e itens de coleta que a entidade que colidiu é o usuário.</td>
                     </tr>
                     <tr>
-                        <td><span class="ui-path">Reciclavio</span></td>
+                        <td><span class="ui-path">Reciclavel</span></td>
                         <td>Modelos de lixo (Garrafas/Cilindros)</td>
                         <td>Informa ao gatilho que a rotina de adição de pontos deve ser executada.</td>
                     </tr>
@@ -744,7 +744,7 @@
 
             <div class="sub-step-title"><i class="fas fa-recycle"></i> Passo 2: Programando a Lógica Física de Gatilho do Item Coletável</div>
             <p class="description">
-                Crie um cilindro na cena (<span class="ui-path">3D Object > Cylinder</span>), nomeie como <code>Item_Reciclavio</code> e altere sua escala para **Scale (0.6, 0.6, 0.6)** para que ele tenha o tamanho adequado. No topo do Inspector, defina sua <span class="ui-path">Tag</span> como <span class="ui-path">Reciclavio</span>. <br><br>
+                Crie um cilindro na cena (<span class="ui-path">3D Object > Cylinder</span>), nomeie como <code>Item_Reciclavel</code> e altere sua escala para **Scale (0.6, 0.6, 0.6)** para que ele tenha o tamanho adequado. No topo do Inspector, defina sua <span class="ui-path">Tag</span> como <span class="ui-path">Reciclavel</span>. <br><br>
                 No componente **Capsule Collider** deste objeto, **marque obrigatoriamente a caixa de seleção Is Trigger**. Isso transforma a barreira física sólida em um campo de força de gatilho fantasma, permitindo que o robô atravesse o objeto e dispare o código abaixo:
             </p>
 
@@ -783,7 +783,7 @@
 
             <div class="sub-step-title"><i class="fas fa-box"></i> Passo 3: Salvando o Objeto como Prefab Corporativo</div>
             <p class="description">
-                Com o script <span class="file-name">ColetavelItem</span> anexado ao objeto <code>Item_Reciclavio</code> na cena e a flag *Is Trigger* ligada, clique sobre o objeto <code>Item_Reciclavio</code> na hierarquia, segure o clique e arraste-o para baixo, soltando-o dentro da pasta de arquivos <span class="ui-path">Assets > _Project > Prefabs</span>. O nome do objeto na hierarquia ficará **Azul escuro**, indicando que agora ele é um Prefab oficial pronto para ser gerado aos milhares por código! Delete o objeto original que sobrou na hierarquia da cena.
+                Com o script <span class="file-name">ColetavelItem</span> anexado ao objeto <code>Item_Reciclavel</code> na cena e a flag *Is Trigger* ligada, clique sobre o objeto <code>Item_Reciclavel</code> na hierarquia, segure o clique e arraste-o para baixo, soltando-o dentro da pasta de arquivos <span class="ui-path">Assets > _Project > Prefabs</span>. O nome do objeto na hierarquia ficará **Azul escuro**, indicando que agora ele é um Prefab oficial pronto para ser gerado aos milhares por código! Delete o objeto original que sobrou na hierarquia da cena.
             </p>
         </section>
 
